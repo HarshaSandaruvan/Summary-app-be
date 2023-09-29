@@ -11,4 +11,16 @@ postRouter.route("/").post((req, res) => {
     res.json(posts);
 });
 
+postRouter.route("/:id").get((req, res) => {
+    const postID=req.params.id;
+    console.log(postID);
+    const post=posts.find((post)=>post.id===postID);
+
+    if (post) {
+        res.json(post);
+    }else{
+        res.status(404).json({message:"Post not found !"})
+    }
+});
+
 export default postRouter;
