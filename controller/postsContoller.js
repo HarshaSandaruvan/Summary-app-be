@@ -1,11 +1,12 @@
+import { uuid } from 'uuidv4';
 import { fetchSummary } from "../util/generateSummary.js";
 
 let posts = [];
 
 export async function savePosts(req, res) {
-    const body = req.body;
-    posts.push(body);
-    res.json(body).status(201);
+    const newSummary = { ...req.body, id: uuid().slice(0, 8) }
+    posts.push(newSummary);
+    res.json(newSummary).status(201);
 }
 
 export async function getAllPosts(req, res) {
