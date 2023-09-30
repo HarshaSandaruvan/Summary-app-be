@@ -1,7 +1,9 @@
 import express, { json } from "express";
 import morgan from "morgan";
 import postRouter from "./api/posts.js";
+import { config } from "dotenv";
 
+config({ path: "./config.env" });
 
 const PORT = process.env.PORT || 3000;
 
