@@ -1,36 +1,44 @@
-import { uuid } from 'uuidv4';
+import Summary from '../models/Summary.js';
 import { fetchSummary } from "../util/generateSummary.js";
 
 let posts = [];
 
 export async function savePosts(req, res) {
-    const newSummary = { ...req.body, id: uuid().slice(0, 8) }
-    posts.push(newSummary);
-    res.json(newSummary).status(201);
+    // const newSummary = { ...req.body, id: uuid().slice(0, 8) }
+    // posts.push(newSummary);
+    const summary = new Summary({
+        text: req.body.text,
+        summary: req.body.summary,
+    });
+
+    await summary.save();
+
+    res.json(summary).status(201);
 }
 
 export async function getAllPosts(req, res) {
-    res.json(posts);
+    const summarize = await Summary.find();
+    res.json(summarize);
 }
 
 export async function deletPostById(req, res) {
     const postID = req.params.id;
-    const post = posts.findIndex((post) => post.id === postID);
-    if (post !== -1) {
-        posts.splice(post, 1);
+    try {
+        await Summary.findOneAndDelete({ publicId: postID })
         res.json({ message: "Post Deleted !" })
-    } else {
+
+    } catch (error) {
         res.status(404).json({ message: "Post not found !" })
     }
+
 }
 
 export async function getPostById(req, res) {
     const postID = req.params.id;
-    console.log(postID);
-    const post = posts.find((post) => post.id === postID);
+    const summary = await Summary.findOne({ publicId: postID })
 
-    if (post) {
-        res.json(post);
+    if (summary) {
+        res.json(summary);
     } else {
         res.status(404).json({ message: "Post not found !" })
     }
@@ -38,13 +46,12 @@ export async function getPostById(req, res) {
 
 export async function updatePost(req, res) {
     const postID = req.params.id;
-    const updatedPost = req.body;
-    const index = posts.findIndex((post) => post.id === postID);
-    console.log(index);
-    if (index !== -1) {
-        posts[index] = updatedPost;
-        console.log(posts[index]);
-        res.json(posts[index])
+    const updatedSummary = req.body;
+
+
+    const summary = await Summary.findOneAndUpdate({ publicId: postID }, updatedSummary)
+    if (summary) {
+        res.json(summary)
     } else {
         res.status(404).json({ message: "Post not found !" })
     }

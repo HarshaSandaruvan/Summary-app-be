@@ -8,6 +8,6 @@ postRouter.route("/").post(savePosts).get(getAllPosts);
 
 postRouter.route("/generate").post(generateSummary);
 
-postRouter.route("/:id").get(getPostById).delete(deletPostById).put(updatePost);
+postRouter.route("/:id").get(getPostById).delete(deletPostById).patch(updatePost);
 
 export default postRouter;
